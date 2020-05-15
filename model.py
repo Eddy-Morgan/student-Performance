@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+from matplotlib import pyplot as plt
 
 df = pd.read_csv("./data/student-mat.csv", sep=";")
 
@@ -48,9 +48,12 @@ def train_and_score(X, y):
     print("Mean Model Accuracy:", np.array(scores).mean())
 
     clf.fit(X_train, y_train)
-
     confuse(y_test, clf.predict(X_test))
-    print()
+    return X_train, X_test, y_train, y_test, clf.predict(X_test)
+
+  
+
+    
 
 
 def main():
@@ -86,20 +89,25 @@ def main():
 
     print("\n\nModel Accuracy Knowing G1 & G2 Scores")
     print("=====================================")
-    train_and_score(X, y)
+    X_train, X_test, y_train, y_test, prediction = train_and_score(X, y)
+    
 
     # Remove grade report 2
     X.drop(["G2"], axis = 1, inplace=True)
     print("\n\nModel Accuracy Knowing Only G1 Score")
     print("=====================================")
-    train_and_score(X, y)
+    X_train, X_test, y_train, y_test, prediction = train_and_score(X, y)
 
     # Remove grade report 1
     X.drop(["G1"], axis=1, inplace=True)
     print("\n\nModel Accuracy Without Knowing Scores")
     print("=====================================")
-    train_and_score(X, y)
-
+    X_train, X_test, y_train, y_test, prediction = train_and_score(X, y)
+    plt.scatter(y_test, prediction)
+    plt.xlabel("True Values")
+    plt.ylabel("Predictions")
+    plt.title('Model Accuracy Without Knowing Scores')
+    plt.show()
 
 
 main()
